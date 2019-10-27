@@ -8,6 +8,7 @@ class App extends Component {
     super(props);
     this.state = {products: [], filteredProducts: [],};
     this.handleChangeSort = this.handleChangeSort.bind(this);
+    this.handleChangeSize = this.handleChangeSize.bind(this);
   }
 
   componentDidMount(){
@@ -23,12 +24,21 @@ class App extends Component {
     this.listProducts();
   }
 
+  handleChangeSize(e){
+    this.setState({size: e.target.value})
+    this.listProducts();
+  }
+
   listProducts(){
     this.setState(state => {
       if(state.sort !== ''){
         state.products.sort((a,b) => (state.sort === 'lowest' ? ((a.price > b.price) ? 1 : -1) : ((a.price < b.price) ? 1 : -1)));
       } else {
         state.products.sort((a,b) => (a.id > b.id) ? 1 : -1);
+      }
+      if(state.size !==''){
+        return { filteredProducts: state.products.filter(a => a.availableSizes.indexOf(state.size.toUpperCase())>=0
+          )}
       }
       return {filteredProducts: state.products}
     })
@@ -39,7 +49,6 @@ class App extends Component {
         <div className="container">
           <h1>E-Commerce Shopping Cart App</h1>
           <hr/>
-
           <div className="row">
             <div className="col-md-8">
               <Filter size={this.state.size} sort={this.state.sort} handleChangeSize={this.handleChangeSize} handleChangeSort={this.handleChangeSort} count={this.state.filteredProducts.length}/>
